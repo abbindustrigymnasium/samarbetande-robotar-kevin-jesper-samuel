@@ -11,7 +11,7 @@
             let speeddataJ = []; //Jespers
             let speeddataS = []; //Samuels
             
-            let chartdataK = []; //Data for charts
+            let chartdataK = [];
             let chartdataJ = [];
             let chartdataS = [];
 
@@ -86,7 +86,8 @@
                 }
                 if (message.destinationName == topic+"kevindata") {
                     speeddataK.push(message.payloadString);
-                    chartdataK.push({"y" : parseInt(message.payloadString)}); //Appends correctly formated value to list
+                    chartdataK.push({"y" : parseInt(message.payloadString)});
+                    let speedometer_value = parseInt(message.payloadString);
                     console.log(speeddataK);
                     document.getElementById("currentspeed car 1").innerHTML = speeddataK[speeddataK.length -1];
 
@@ -160,7 +161,7 @@
                 document.getElementById("messages").innerHTML += '<span>Disconnected</span><br/>';
             }
 
-            function show(shown, hidden) { //shows/hides page if button is clicked
+            function show(shown, hidden) {
                 document.getElementById(shown).style.display='block';
                 document.getElementById(hidden).style.display='none';
                 return false;
