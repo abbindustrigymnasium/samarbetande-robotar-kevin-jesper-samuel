@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Argentinska gudbarn</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+      <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+      <script>
+
+            let speeddataK = []; //Kevins
+            let speeddataJ = []; //Jespers
+            let speeddataS = []; //Samuels
+            
+            let chartdataK = []; //Data for charts
+            let chartdataJ = [];
+            let chartdataS = [];
+
+            function startConnect() {
+                clientID = document.getElementById("ID").value;
+            
+                // Fetch the hostname/IP address and port number from the form
+                host =document.getElementById("host").value;
+                port = document.getElementById("port").value;
+            
+                // Print output for the user in the messages div
+                document.getElementById("messages").innerHTML += '<span>Connecting to: ' + host + ' on port: ' + port + '</span><br/>';
+                document.getElementById("messages").innerHTML += '<span>Using the following client value: ' + clientID + '</span><br/>';
+              // Initialize new Paho client connection
+                client = new Paho.MQTT.Client(host, Number(port), clientID);
+                // Set callback handlers
+                client.onConnectionLost = onConnectionLost;
+                client.onMessageArrived = onMessageArrived;
+            
+                client.connect({userName : "kevin.klarin@abbindustrigymnasium.se",password : "1337",
+                    onSuccess: onConnect,
+                    onFailure: onFail,
+                               });
+            }
+            function onFail() {
+                document.getElementById("messages").innerHTML += '<span>ERROR: Connection to: ' + host + ' on port: ' + port + ' failed.</span><br/>'
+ 
+            }  
+           let topic="kevin.klarin@abbindustrigymnasium.se/";
+            // Called when the client connects
+            function onConnect() {
+                // Fetch the MQTT topic from the form
+                newtopic = topic + document.getElementById("topic").value;
+                console.log(newtopic);
+                // Print output for the user in the messages div
+                document.getElementById("messages").innerHTML += '<span>Subscribing to: ' + newtopic + '</span><br/>';
+            
+                // Subscribe to the requested topic
+                client.subscribe(topic+"lmaoxd");
+                //client.subscribe(topic+"speed");
+                client.subscribe(topic+"kevindata")
+                client.subscribe(topic+"jesperdata")
+                client.subscribe(topic+"samueldata")
+                //client.subscribe("speed");
+                /*message= new Paho.MQTT.Message("20");
+                message.destinationName=topic+"robot";
+                client.send(message);*/
+            }
+            function onSend() {
+                // Fetch the MQTT topic from the form
+                // Print output for the user in the messages div'
+                //let message = "Dont press that button";
+                let message= document.getElementById("newMessage").value;
+                //console.log(message);
+                  message= new Paho.MQTT.Message(message);
+                  message.destinationName=topic+"speed";
+                  client.send(message);
+            }
+            // Called when the client loses its connection
+            function onConnectionLost(responseObject) {
+                document.getElementById("messages").innerHTML += '<span>ERROR: Connection lost</span><br/>';
+                if (responseObject.errorCode !== 0) {
+                    document.getElementById("messages").innerHTML += '<span>ERROR: ' + + responseObject.errorMessage + '</span><br/>';
+                }
+            }
+            
+            // Called when a message arrives
+            function onMessageArrived(message) {
+                console.log("onMessageArrived: " + message.payloadString);
+                if (message.destinationName == topic+"lmaoxd") {
+                    document.getElementById("messages").innerHTML +=message.payloadString + '</span><br/>';
+                }
+                if (message.destinationName == topic+"kevindata") {
+                    speeddataK.push(message.payloadString);
+                    chartdataK.push({"y" : parseInt(message.payloadString)}); //Appends correctly formated value to list
+                    console.log(speeddataK);
+                    document.getElementById("currentspeed car 1").innerHTML = speeddataK[speeddataK.length -1];
+
+                    var kevinChart = new CanvasJS.Chart("kevinChart", {
+                        animationEnabled: true,
+                        theme: "light2",
+                        title:{
+                            text: "Hastighet"
+                        },
+                        axisY:{
+                            includeZero: false
+                        },
+                        data: [{        
+                            type: "line",       
+                            dataPoints: chartdataK
+                        }]
+                    });
+                    kevinChart.render();
+                }
+                if (message.destinationName == topic+"jesperdata") {
+                    speeddataJ.push(message.payloadString);
+                    chartdataJ.push({"y" : parseInt(message.payloadString)});
+                    console.log(speeddataJ);
+                    document.getElementById("currentspeed car 2").innerHTML = speeddataJ[speeddataJ.length -1];
+
+                    var jesperChart = new CanvasJS.Chart("jesperChart", {
+                        animationEnabled: true,
+                        theme: "light2",
+                        title:{
+                            text: "Hastighet"
+                        },
+                        axisY:{
+                            includeZero: false
+                        },
+                        data: [{        
+                            type: "line",       
+                            dataPoints: chartdataJ
+                        }]
+                    });
+
+                    jesperChart.render();
+                }
+                if (message.destinationName == topic+"samueldata") {
+                    speeddataS.push(message.payloadString);
+                    chartdataS.push({"y" : parseInt(message.payloadString)});
+                    console.log(speeddataS);
+                    document.getElementById("currentspeed car 3").innerHTML = speeddataS[speeddataS.length -1];
+
+                    var samuelChart = new CanvasJS.Chart("samuelChart", {
+                        animationEnabled: true,
+                        theme: "light2",
+                        title:{
+                            text: "Hastighet"
+                        },
+                        axisY:{
+                            includeZero: false
+                        },
+                        data: [{        
+                            type: "line",       
+                            dataPoints: chartdataS
+                        }]
+                    });
+
+                    samuelChart.render();
+                }
+            }
+            
+            // Called when the disconnection button is pressed
+            function startDisconnect() {
+                client.disconnect();
+                document.getElementById("messages").innerHTML += '<span>Disconnected</span><br/>';
+            }
+
+            function show(shown, hidden) { //shows/hides page if button is clicked
+                document.getElementById(shown).style.display='block';
+                document.getElementById(hidden).style.display='none';
+                return false;
+            }
+
+    </script>
+            
+    </head>
+   <body onload='draw(0);'>
+        <h1>Angenäma gubbar</h1>
+        <a href="#" onclick="return show('Page1','Page2');">Se bilarna</a>
+        <a href="#" onclick="return show('Page2','Page1');">Anslut till bilarna</a>
+
+        <div id="Page1">
+            <div class="send_button">
+                <input id="newMessage" type="text" name="newMessage" value="">
+                <input type="button" onclick="onSend()" value="Send speed">
+            </div>
+            <div class="c1">
+                <b>Kevins bil</b>
+                <h2 id="currentspeed car 1">24.5</h2>
+                <div class ="chart1" id="kevinChart" style="height: 200px; width: 300px;"></div>
+            </div>
+            <div class="c2">
+                <b>Jespers bil</b>
+                <h2 id="currentspeed car 2">69.0</h2>
+                <div class ="chart2" id="jesperChart" style="height: 200px; width: 300px;"></div>
+            </div>
+            <div class="c3">
+                <b>Samuels bil</b>
+                <h2 id="currentspeed car 3">42.0</h2>
+                <div class ="chart3" id="samuelChart" style="height: 200px; width: 300px;"></div>
+            </div>
+        </div>
+    
+        <div id="Page2" style="display:none">
+             <div class="wrapper">
+                <form id="connection-information-form">
+                   <b>Hostname or IP Address:</b> 
+                   <input id="host" type="text" name="host" value="maqiatto.com"><br>
+                   <b>Client ID:</b> 
+                   <input id="ID" type="text" name="ID" value="Angenäm gubbe"><br>
+                   <b>Port:</b>
+                   <input id="port" type="text" name="port" value="8883"><br>
+                   <b>Topic:</b>
+                   <input id="topic" type="text" name="topic" value="speed"><br><br>
+                   <input type="button" onclick="startConnect()" value="Connect">
+                   <input type="button" onclick="startDisconnect()" value="Disconnect">
+       <br><br>
+                </form>
+                <div id="messages"></div>
+             </div>
+        </div>
+      
+   </body>
+   <style>
+       body {
+           background-image: url("volvo 240.jpg");
+           background-size: cover; 
+       }
+       div.send_button {
+           margin-top: 30px;
+       }
+       h1 {
+           color: yellow;
+           font-size: 50px;
+           font-family: sans-serif;
+       }
+
+       div.c1 {
+           color: white;
+           float: left;
+           font-size: 25px;
+           margin-left: 20px;
+           margin-top: 20px;
+       }
+        div.c1 > h2 {
+            color: black;
+            background-color: white;
+            width: 120px;
+            text-align: center;
+            font-size: 50px;
+            margin-top: 0px;
+            margin-right: 250px;
+            border: 3px solid black;
+        }
+        div.c2 {
+            color: white;
+           float: left;
+           font-size: 25px;
+           margin-top: 20px;
+       }
+        div.c2 > h2{
+            color: black;
+            background-color: white;
+            width: 120px;
+            text-align: center;
+            font-size: 50px;
+            margin-top: 0px;
+            margin-right: 250px;
+            border: 3px solid black;
+        }
+        div.c3 {
+            color: white;
+            float: left;
+           font-size: 25px;
+           margin-top: 20px;
+       }
+        div.c3 > h2{
+            color: black;
+            background-color: white;
+            width: 120px;
+            text-align: center;
+            font-size: 50px;
+            margin-top: 0px;
+            margin-right: 250px;
+            border: 3px solid black;
+        }
+        div.wrapper {
+            padding: 20px;
+            margin-top: 20px;
+            margin-left: 20px;
+            width: 350px;
+            background-color: gray;
+            border: 3px solid black;
+            clear: both;
+        }
+
+        a{
+            padding: 5px;
+            color: black;
+            background-color:gray;
+            width: 60px;
+            text-align: center;
+            font-size: 25px;
+            margin-left: 20px;
+            border: 3px solid black;
+
+        }
+        
+        
+    </style>
+</html>
