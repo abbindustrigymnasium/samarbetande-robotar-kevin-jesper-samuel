@@ -93,7 +93,7 @@ int calc_speed () {
       counter ++;
     }
     
-    if (counter >= 300) { //använder counter för att undvika att sakta ner bilen med för många meddelanden till MQTT
+    if (counter >= 100) { //använder counter för att undvika att sakta ner bilen med för många meddelanden till MQTT
       average = average/counter; //Skickar ett snittvärde
       //Serial.println(average);
       client.publish("kevin.klarin@abbindustrigymnasium.se/kevindata",String(average));
