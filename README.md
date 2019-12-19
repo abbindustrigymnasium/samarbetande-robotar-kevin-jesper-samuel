@@ -11,7 +11,7 @@ I denna mapp finns bilder på bilarna, där du kan se hur de färdiga bilarna se
 Här hittar du koden till bilarna. Bilarna använder arduino-kod vilket innebär att de är skrivna i C++ och är .ino filer.
 
 ## Styrningscheman 
-Blockscheman gjorda i Vsio för att förklara hur det är tänkt att bilarna ska fungera.
+Blockscheman gjorda i Visio för att förklara hur det är tänkt att bilarna ska fungera.
 
 ## Övriga filer
 Filerna är precis vad namnen får dig att tro att de är.
