@@ -16,5 +16,5 @@ Blockscheman gjorda i Visio för att förklara hur det är tänkt att bilarna sk
 ## Övriga filer
 Filerna är precis vad namnen får dig att tro att de är.
 
-## Anyways, här är en volvo
+## Här är en Volvo.
 ![](volvo%20240.jpg)
