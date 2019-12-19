@@ -8,7 +8,7 @@ Här hittar du [hemsidan](https://volvo240.s3.amazonaws.com/Webpage_charts.html)
 I denna mapp finns bilder på bilarna, där du kan se hur de färdiga bilarna ser ut.
 
 ## Kod till bilarna
-Här hittar du koden till bilarna. Bilarna använder arduino-kod vilket innebär att de är skrivna i C++ och är .ino filer.
+Här hittar du koden till bilarna. Bilarna använder Arduino-kod vilket innebär att de är skrivna i C++ och är .ino filer.
 
 ## Styrningscheman 
 Blockscheman gjorda i Visio för att förklara hur det är tänkt att bilarna ska fungera.
